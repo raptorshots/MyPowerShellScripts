@@ -12,14 +12,14 @@ Use Powershell ISE and place the script in somepath like C:\Script instead of a 
 
 #>
 
-#Authorizatioion
+#Authorization
 $personalToken = "<YOUR_PAT_TOKEN>" #Use System Token if running in Pipeline
 $token = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes(":$($personalToken)"))
 $header = @{authorization = "Basic $token" }
 
 
 
-#Configure OrganizatioName
+#Configure Organization Name as it appears in URL when you access the ADO.
 $orgName = "YOUR_ORG_NAME"
 
 #Get List of all Projects within Org.
