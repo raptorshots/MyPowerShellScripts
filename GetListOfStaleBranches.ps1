@@ -8,6 +8,7 @@ Should have a valid PAT Token with atleast READ and Status access to Code
 .NOTES
 Change the $orgName and $personalToken as requried
 You can use System Token and Environment variables if running from pipeline
+Use Powershell ISE and place the script in somepath like C:\Script instead of a UNC path for better compatibility
 
 #>
 
@@ -28,7 +29,7 @@ $projectNameList = (Invoke-RestMethod $ProjectListUrl -Method Get -ContentType "
 #Very Manual way of Creating a CSV File. 
 Write-Output "ProjectName,RepoName,BranchName,CommitterEmail,LastUpdatedDate" | Out-file BranchInfo.csv
 
-# Set the Target Cut off Date for Stale Branches
+# Set the Target Cut off Date for Stale Branches. HEre Set to 90 days.
 $targetDate = (Get-date).AddDays(-90)
 
 #Create a list of Project Name
@@ -53,7 +54,7 @@ Foreach ($project in $projectName) {
         #For Each branch Skip pull request, master branch, tags etc. You can add additional Criteria if any here
         foreach ($branchName in $allBranchNames) { 
             if ( ($branchName -like "refs/pull*") -or ($branchName -like "refs/tags*") -or ($branchName -eq 'refs/heads/master') ) {
-                Write-Verbose "$branchName is pull/ request tags branch. Skipping"
+                Write-Output "$branchName is pull/ request tags branch. Skipping"
             }
             else {
                 
@@ -69,13 +70,19 @@ Foreach ($project in $projectName) {
                 # If branchLast updated Date is less than the target date specified output same to file
                 if ($branchLastUpdated -lt $targetDate) {
                 
-                    Write-verbose "ProjectName is $project and RepoName is $repoName and Branch name is $completeBRanchName and last updated date is $branchLastUpdated" | Export-csv -Path BranchInfo.csv -NoTypeInformation
+                    Write-Output "ProjectName is $project and RepoName is $repoName and Branch name is $completeBRanchName and last updated date is $branchLastUpdated" 
                 
                     Write-Output "$project, $repoName, $completeBranchName, $committerEmail, $branchLastUpdated" | Out-file BranchInfo.csv -Append
                 
-   
+              
+                                      
+                
+                
+                
+                
+                
                 }
-                else { Write-Verbose "Newer Branch, skipping" }
+                else { Write-Output "Found $completeBranchName Newer Branch, skipping" }
             }
 
 
@@ -87,4 +94,4 @@ Foreach ($project in $projectName) {
 #Export and Invoke the CSV File 
 Import-Csv .\BranchInfo.csv | Export-Csv -Path BranchLatest.csv
 Remove-item .\BranchInfo.csv
-Invoke-item .\BrancLatest.csv
+Invoke-item .\BranchLatest.csv
