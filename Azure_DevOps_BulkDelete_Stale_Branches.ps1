@@ -15,14 +15,14 @@ THIS IS A DESTRUCTIVE OPERATION. This cannot be reverted back unless you have a 
 Script is given as IS.
 #>
 
-#Authorizatioion
+#Authorization
 $personalToken = "<Your_PAT_TOKEN>" #Use System Token if running in Pipeline
 $token = [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes(":$($personalToken)"))
 $header = @{authorization = "Basic $token" }
 
 
 
-#Configure OrganizatioName as it appears in URL when you access the ADO.
+#Configure Organization Name as it appears in URL when you access the ADO.
 $orgName = "<YourOrgName>"
 
 #Get List of all Projects within Org.
